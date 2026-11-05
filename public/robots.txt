@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://fiozxr.github.io/fiozxrs-lab/sitemap.xml

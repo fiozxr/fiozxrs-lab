@@ -1,0 +1,25 @@
+---
+import { site } from "../data/site";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+<footer class="site-footer">
+  <div class="shell footer-top">
+    <div>
+      <a class="wordmark footer-wordmark" href={`${base}/`}>
+        <span class="wordmark-mark">F.</span><span>{site.name}</span>
+      </a>
+      <p class="footer-description">{site.description}</p>
+    </div>
+    <div class="footer-links">
+      <a href={`${base}/articles/`}>Articles</a>
+      <a href={`${base}/projects/`}>Projects</a>
+      <a href={`${base}/about/`}>About</a>
+      <a href={`${base}/rss.xml`}>RSS feed</a>
+      <a href={site.github} target="_blank" rel="noreferrer">GitHub ↗</a>
+    </div>
+  </div>
+  <div class="shell footer-bottom">
+    <span>© {new Date().getFullYear()} {site.author}. Independent work, openly documented.</span>
+    <span>Built for curiosity. Published with care.</span>
+  </div>
+</footer>

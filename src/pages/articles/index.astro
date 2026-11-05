@@ -1,0 +1,20 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import EntryCard from "../../components/EntryCard.astro";
+import { getCollection } from "astro:content";
+const entries = (await getCollection("articles", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+<BaseLayout title="Articles" description="Research, field notes and practical technical writing from FIOZXR'S LAB.">
+  <section class="page-intro shell">
+    <span class="eyebrow">THE PUBLICATION / 01</span>
+    <h1>Articles<span class="accent-dot">.</span></h1>
+    <p>Long-form thinking, practical guides and field notes on the technology worth understanding.</p>
+    <div class="page-rule"><span>{String(entries.length).padStart(2, "0")} PUBLISHED</span><span>INDEPENDENTLY WRITTEN</span></div>
+  </section>
+  <section class="section shell listing-section">
+    {entries.length ? <div class="card-grid">{entries.map((entry) => <EntryCard entry={entry} />)}</div> : (
+      <div class="empty-editorial compact"><span class="empty-number">NO ARTICLES PUBLISHED YET</span><h2>Good work takes research.</h2><p>The first articles will be published here when they are ready. The archive stays empty until there is something worth reading.</p></div>
+    )}
+  </section>
+</BaseLayout>

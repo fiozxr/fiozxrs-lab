@@ -1,0 +1,119 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import EntryCard from "../components/EntryCard.astro";
+import { getCollection } from "astro:content";
+import { site } from "../data/site";
+
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+const articles = (await getCollection("articles", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const projects = (await getCollection("projects", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+const featured = articles.find((entry) => entry.data.featured) ?? articles[0];
+---
+<BaseLayout title={site.name}>
+  <section class="hero shell">
+    <div class="hero-copy">
+      <div class="eyebrow hero-kicker"><span class="status-dot"></span> AN INDEPENDENT TECHNICAL PUBLICATION</div>
+      <h1>Ideas are easy.<br /><span class="text-gradient">The work is the story.</span></h1>
+      <p class="hero-description">
+        A field journal for building, breaking, understanding and documenting technology.
+        Notes from the systems, software and experiments behind the screen.
+      </p>
+      <div class="hero-actions">
+        <a class="button button-primary" href={`${base}/articles/`}>Explore articles <span>↗</span></a>
+        <a class="button button-quiet" href={`${base}/about/`}>About the lab</a>
+      </div>
+      <div class="hero-meta">
+        <span><span class="meta-line"></span> SYSTEMS · SOFTWARE · RESEARCH</span>
+        <span>EST. 2026</span>
+      </div>
+    </div>
+    <div class="hero-art" aria-label="Abstract technical illustration">
+      <div class="orbit orbit-one"></div>
+      <div class="orbit orbit-two"></div>
+      <div class="orbit orbit-three"></div>
+      <div class="core-grid"></div>
+      <div class="core-mark">F<span>.</span></div>
+      <div class="art-label art-label-top">FIELD NOTES / 001</div>
+      <div class="art-label art-label-bottom">OBSERVE → BUILD → DOCUMENT</div>
+      <span class="art-cross cross-one">+</span><span class="art-cross cross-two">+</span>
+    </div>
+  </section>
+
+  <section class="ticker-wrap" aria-label="Publication topics">
+    <div class="shell ticker">
+      {site.topics.map((topic) => <span>{topic}<i> / </i></span>)}
+    </div>
+  </section>
+
+  <section class="section shell">
+    <div class="section-heading">
+      <div><span class="eyebrow">THE EDITOR'S DESK</span><h2>Latest dispatches</h2></div>
+      <a class="text-link" href={`${base}/articles/`}>All articles <span>↗</span></a>
+    </div>
+    {featured ? (
+      <div class="featured-layout">
+        <article class="featured-card">
+          <div class="featured-visual">
+            <span class="featured-index">FEATURED / 01</span>
+            <div class="featured-graphic"><span>F</span><i></i><b></b></div>
+            <span class="featured-visual-caption">A NOTE FROM THE LAB</span>
+          </div>
+          <div class="featured-content">
+            <span class="eyebrow">{featured.data.category}</span>
+            <h3><a href={`${base}/articles/${featured.slug}/`}>{featured.data.title}</a></h3>
+            <p>{featured.data.description}</p>
+            <a class="text-link" href={`${base}/articles/${featured.slug}/`}>Read the story <span>↗</span></a>
+          </div>
+        </article>
+        <div class="recent-list">
+          {articles.filter((entry) => entry.id !== featured.id).slice(0, 3).map((entry, index) => (
+            <article class="recent-item">
+              <span class="recent-number">0{index + 2}</span>
+              <div><span class="eyebrow">{entry.data.category}</span><h3><a href={`${base}/articles/${entry.slug}/`}>{entry.data.title}</a></h3><p>{entry.data.description}</p></div>
+              <span class="recent-arrow">↗</span>
+            </article>
+          ))}
+          {articles.length === 1 && <p class="muted-note">More dispatches are being prepared. New work will appear here.</p>}
+        </div>
+      </div>
+    ) : (
+      <div class="empty-editorial">
+        <span class="empty-number">01 / FIRST DISPATCH</span>
+        <h3>The notebook is open.</h3>
+        <p>Research, field notes and practical guides will appear here as they are written and reviewed. No filler posts, no recycled noise.</p>
+        <a class="text-link" href={`${base}/about/`}>What this publication is about <span>↗</span></a>
+      </div>
+    )}
+  </section>
+
+  <section class="section section-muted">
+    <div class="shell">
+      <div class="section-heading">
+        <div><span class="eyebrow">WORK IN PROGRESS</span><h2>From the lab</h2></div>
+        <a class="text-link" href={`${base}/projects/`}>Explore projects <span>↗</span></a>
+      </div>
+      {projects.length ? (
+        <div class="card-grid">{projects.slice(0, 3).map((entry) => <EntryCard entry={entry} kind="project" />)}</div>
+      ) : (
+        <div class="project-placeholder">
+          <div class="placeholder-symbol">⌘</div>
+          <div><h3>Projects, experiments and build logs.</h3><p>Each project gets its own record: the problem, architecture, decisions, progress and lessons learned.</p></div>
+          <a class="text-link" href={`${base}/projects/`}>Project index <span>↗</span></a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <section class="section shell topic-section">
+    <div class="section-heading">
+      <div><span class="eyebrow">AREAS OF INTEREST</span><h2>What we investigate</h2></div>
+    </div>
+    <div class="topic-grid">
+      {site.topics.map((topic, index) => (
+        <div class="topic-item"><span class="topic-number">0{index + 1}</span><h3>{topic}</h3><span class="topic-arrow">↗</span></div>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

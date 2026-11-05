@@ -1,0 +1,20 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import EntryCard from "../../components/EntryCard.astro";
+import { getCollection } from "astro:content";
+const entries = (await getCollection("articles", ({ data }) => !data.draft && (data.category.toLowerCase().includes("tutorial") || data.tags.some((tag) => tag.toLowerCase() === "tutorial"))))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+<BaseLayout title="Tutorials" description="Practical, reproducible technical tutorials from FIOZXR'S LAB.">
+  <section class="page-intro shell">
+    <span class="eyebrow">THE FIELD GUIDE / 03</span>
+    <h1>Tutorials<span class="accent-dot">.</span></h1>
+    <p>Step-by-step technical guides built around reproducible outcomes, clear assumptions and useful context.</p>
+    <div class="page-rule"><span>{String(entries.length).padStart(2, "0")} GUIDES</span><span>LEARN BY BUILDING</span></div>
+  </section>
+  <section class="section shell listing-section">
+    {entries.length ? <div class="card-grid">{entries.map((entry) => <EntryCard entry={entry} />)}</div> : (
+      <div class="empty-editorial compact"><span class="empty-number">FIELD GUIDES / IN PREPARATION</span><h2>Useful instructions, not copy-paste noise.</h2><p>Tutorials will be added as they are tested and checked. Guides will include prerequisites, expected results and troubleshooting notes.</p></div>
+    )}
+  </section>
+</BaseLayout>

@@ -1,0 +1,20 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import EntryCard from "../../components/EntryCard.astro";
+import { getCollection } from "astro:content";
+const entries = (await getCollection("projects", ({ data }) => !data.draft))
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+<BaseLayout title="Projects" description="Build logs, experiments and engineering projects documented by FIOZXR'S LAB.">
+  <section class="page-intro shell">
+    <span class="eyebrow">THE WORKBENCH / 02</span>
+    <h1>Projects<span class="accent-dot">.</span></h1>
+    <p>Things being built, tested and improved. Each project is documented as an evolving engineering record.</p>
+    <div class="page-rule"><span>{String(entries.length).padStart(2, "0")} PROJECTS</span><span>BUILD IN PUBLIC</span></div>
+  </section>
+  <section class="section shell listing-section">
+    {entries.length ? <div class="card-grid">{entries.map((entry) => <EntryCard entry={entry} kind="project" />)}</div> : (
+      <div class="empty-editorial compact"><span class="empty-number">WORKBENCH / READY</span><h2>Nothing logged yet.</h2><p>Project pages will capture the objective, architecture, milestones, trade-offs and lessons from each build.</p></div>
+    )}
+  </section>
+</BaseLayout>

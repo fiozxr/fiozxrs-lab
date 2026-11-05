@@ -1,0 +1,29 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { site } from "../../data/site";
+---
+<BaseLayout title="About the Lab" description="About FIOZXR'S LAB, an independent technical publication.">
+  <section class="page-intro shell">
+    <span class="eyebrow">THE PURPOSE / 04</span>
+    <h1>About the lab<span class="accent-dot">.</span></h1>
+    <p>A place to make technical work understandable, traceable and useful to other people.</p>
+    <div class="page-rule"><span>INDEPENDENT</span><span>OPEN BY DEFAULT</span></div>
+  </section>
+  <section class="section shell about-grid">
+    <div class="about-lead"><span class="eyebrow">WHY THIS EXISTS</span><h2>Document the process, not just the outcome.</h2></div>
+    <div class="about-copy">
+      <p>FIOZXR'S LAB is an independent technical publication about the systems we use, the software we build, the experiments we run and the problems we learn to solve.</p>
+      <p>The goal is straightforward: publish useful work with enough context that someone else can understand it, reproduce it or build on it.</p>
+      <p>Expect engineering notes, practical tutorials, project logs, technical explainers and honest post-mortems. If something fails, the useful part may be documenting why.</p>
+      <h3>Editorial principles</h3>
+      <ul>
+        <li>Show evidence and distinguish measured results from assumptions.</li>
+        <li>Prefer useful detail over publishing for volume.</li>
+        <li>Credit original sources and contributors.</li>
+        <li>Keep guides understandable, reproducible and maintained.</li>
+        <li>Correct mistakes transparently.</li>
+      </ul>
+      <div class="about-contact"><span class="eyebrow">ELSEWHERE</span><a class="text-link" href={site.github} target="_blank" rel="noreferrer">GitHub profile ↗</a><a class="text-link" href={site.repository} target="_blank" rel="noreferrer">Publication repository ↗</a></div>
+    </div>
+  </section>
+</BaseLayout>

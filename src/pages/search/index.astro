@@ -1,0 +1,84 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+---
+<BaseLayout title="Search" description="Search articles and projects published by FIOZXR'S LAB.">
+  <section class="page-intro shell search-intro">
+    <span class="eyebrow">THE INDEX / SEARCH</span>
+    <h1>Find something<span class="accent-dot">.</span></h1>
+    <p>Search across published articles and project records.</p>
+    <label class="search-box">
+      <span class="sr-only">Search the publication</span>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"></circle><path d="m16 16 5 5"></path></svg>
+      <input id="site-search" type="search" placeholder="Try “Linux”, “AI” or “security”…" autocomplete="off" />
+      <kbd>/</kbd>
+    </label>
+    <p id="search-status" class="search-status" aria-live="polite">Enter a topic, title or keyword.</p>
+  </section>
+  <section class="section shell listing-section">
+    <div id="search-results" class="card-grid"></div>
+  </section>
+</BaseLayout>
+<script>
+  const input = document.querySelector("#site-search");
+  const results = document.querySelector("#search-results");
+  const status = document.querySelector("#search-status");
+  const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+  let index = [];
+
+  const escapeText = (value) => String(value ?? "");
+  const render = (items) => {
+    results.replaceChildren();
+    for (const item of items) {
+      const article = document.createElement("article");
+      article.className = "entry-card";
+      const top = document.createElement("div");
+      top.className = "entry-card-top";
+      const category = document.createElement("span");
+      category.className = "eyebrow";
+      category.textContent = item.category;
+      const kind = document.createElement("span");
+      kind.className = "entry-date";
+      kind.textContent = item.kind;
+      top.append(category, kind);
+      const heading = document.createElement("h3");
+      const link = document.createElement("a");
+      link.href = `${base}${item.url}`;
+      link.textContent = escapeText(item.title);
+      heading.append(link);
+      const description = document.createElement("p");
+      description.textContent = escapeText(item.description);
+      article.append(top, heading, description);
+      results.append(article);
+    }
+  };
+
+  fetch(`${base}/search-index.json`)
+    .then((response) => {
+      if (!response.ok) throw new Error("Search index unavailable");
+      return response.json();
+    })
+    .then((data) => { index = data; })
+    .catch(() => { status.textContent = "The search index could not be loaded. Try again after the next deployment."; });
+
+  input?.addEventListener("input", () => {
+    const query = input.value.trim().toLowerCase();
+    if (!query) {
+      results.replaceChildren();
+      status.textContent = "Enter a topic, title or keyword.";
+      return;
+    }
+    const matches = index.filter((item) =>
+      [item.title, item.description, item.category, ...(item.tags || [])].join(" ").toLowerCase().includes(query)
+    ).slice(0, 20);
+    render(matches);
+    status.textContent = `${matches.length} result${matches.length === 1 ? "" : "s"} for “${input.value.trim()}”.`;
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "/" && !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) {
+      event.preventDefault();
+      input?.focus();
+    }
+  });
+</script>
